@@ -1,4 +1,5 @@
 import requests
+import csv
 def usersearch():
         username = input("Enter a GitHub username: ")
         response = requests.get(f"https://api.github.com/users/{username}")
@@ -13,6 +14,9 @@ def usersearch():
             print(f"Bio: {bio}")
             print(f"Public Repos: {repos}\n")
             print(f"Followers: {data['followers']}")
+            with open("scans.csv", "a") as file:
+                writer = csv.writer(file)
+                writer.writerow([data['login'], name, repos])
         elif response.status_code == 404:
             print("Error 404: User doesn't exist.")
         elif response.status_code == 403:
@@ -60,7 +64,8 @@ menu = """
 1. Search by Username
 2. Search by Repository
 3. Check API Rate Limit
-4. Exit
+4: See search data in CSV
+5. Exit
 -----------------------
 Choose an option: """
 
@@ -75,6 +80,8 @@ def userinput():
             elif user_input == 3:
                 check_limit()
             elif user_input == 4:
+                print("Go to scans.csv")
+            elif user_input == 5:
                 break
         except ValueError:
             print("That's not a number!")
